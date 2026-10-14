@@ -13,9 +13,8 @@ Every sorting function in this file also takes a boolean `reverse` parameter.
 When reverse=True, the elements are sorted in the opposite order,
 equivalently, the result of every call to cmp is negated.
 '''
-
 import math
-import random
+
 
 def cmp_standard(a, b):
     '''
@@ -159,7 +158,7 @@ def cmp_nan_first(a, b):
         return -1
     if math.isnan(b):
         return 1
-    return cmp_standard(a, b):
+    return cmp_standard(a, b)
 
 
 def _natural_chunks(s):
@@ -250,7 +249,7 @@ def _merged(xs, ys, cmp=cmp_standard, reverse=False):
         def cmp_used(a, b):
             return -cmp(a, b)
     else:
-        def cmp_used = cmp
+        cmp_used = cmp
 
     out = []
     i = 0
@@ -295,9 +294,9 @@ def merge_sorted(xs, cmp=cmp_standard, reverse=False):
     if len(xs) <= 1:
         return xs
     mid = len(xs) // 2
-    left = merge_sorted(xs[:mid], cmp = cmp, reverse = reverse)
-    right = merge_sorted(xs[mid:], cmp = cmp, reverse = reverse)
-    return merged(left, right, cmp = cmp, reverse = reverse)
+    left = merge_sorted(xs[:mid], cmp=cmp, reverse=reverse)
+    right = merge_sorted(xs[mid:], cmp=cmp, reverse=reverse)
+    return _merged(left, right, cmp=cmp, reverse=reverse)
 
 
 def quick_sorted(xs, cmp=cmp_standard, reverse=False):
@@ -305,7 +304,7 @@ def quick_sorted(xs, cmp=cmp_standard, reverse=False):
     Quicksort is like mergesort,
     but it uses a different strategy to split the list.
     Instead of splitting the list down the middle,
-    a "pivot" value is randomly selected, 
+    a "pivot" value is randomly selected,
     and the list is split into a "less than" sublist and a "greater than" sublist.
 
     The pseudocode is:
@@ -344,10 +343,10 @@ def quick_sorted(xs, cmp=cmp_standard, reverse=False):
     pivot = xs[mid]
     smaller = [x for x in xs if cmp_used(x, pivot) < 0]
     equal = [x for x in xs if cmp_used(x, pivot) == 0]
-    larger = [x for x in xs if cmp_used(x, pivot) < 0]
-    return (quick_sorted(smaller, cmp = cmp, reverse = reverse)
-            + equal
-            + quick_sorted(larger, cmp = cmp, reverse = reverse))
+    larger = [x for x in xs if cmp_used(x, pivot) > 0]
+    left = quick_sorted(smaller, cmp=cmp, reverse=reverse)
+    right = quick_sorted(larger, cmp=cmp, reverse=reverse)
+    return left + equal + right
 
 
 def quick_sort(xs, cmp=cmp_standard, reverse=False):

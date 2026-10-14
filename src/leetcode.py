@@ -15,6 +15,7 @@ you are welcome to use built-in functions or the functions in sorting.py
 CSCI148: Graph Algorithms will teach you how to solve problems like this
 without needing any hints.
 '''
+import functools
 
 
 def merge_intervals(intervals):
@@ -42,6 +43,14 @@ def merge_intervals(intervals):
     '''
     def key(interval):
         return interval[0]
+
+    result = []
+    for interval in sorted(intervals, key=key):
+        if result == [] or result[-1][-1] < interval[0]:
+            result.append(interval[:])
+        else:
+            result[-1][1] = max(result[-1][-1], interval[1])
+    return result
 
 
 def rank_teams(votes):
@@ -80,6 +89,15 @@ def rank_teams(votes):
         # negated counts sort descending; the letter breaks ties
         return tuple(-n for n in counts[team]) + (team,)
 
+    for team in votes[0]:
+        counts[team] = [0] * len(votes[0])
+
+    for vote in votes:
+        for i, team in enumerate(vote):
+            counts[team][i] += 1
+
+    return ''.join(sorted(votes[0], key=key))
+
 
 def largest_number(nums):
     '''
@@ -107,6 +125,13 @@ def largest_number(nums):
         if a + b > b + a:
             return -1
         return 1 if b + a > a + b else 0
+
+    strs = [str(n) for n in nums]
+    strs = sorted(strs, key=functools.cmp_to_key(cmp))
+    result = ''.join(strs)
+    if result[0] == '0':
+        return '0'
+    return result
 
 
 def two_city_sched_cost(costs):
@@ -136,3 +161,13 @@ def two_city_sched_cost(costs):
     '''
     def key(cost):
         return cost[0] - cost[1]
+
+    n = len(costs) // 2
+    ordered = sorted(costs, key=key)
+    total = 0
+    for i, cost in enumerate(ordered):
+        if i < n:
+            total += cost[0]
+        else:
+            total += cost[1]
+    return total
